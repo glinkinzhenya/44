@@ -19,7 +19,9 @@ form.addEventListener("submit", e => {
             return Promise.reject(data);
         })
         .then(data => {
+
             const box = document.createElement("div");
+            // box.innerHTML = "";
             box.classList.add("box");
             const h1 = document.createElement("h1");
             h1.innerText = `${data.title}`;
@@ -39,18 +41,21 @@ form.addEventListener("submit", e => {
             div.addEventListener("click", e => {
                 e.preventDefault();
 
-                fetch(`${API}/comments/${id.value}`)
+                fetch(`${API}/posts/${id.value}/comments`)
                     .then(data => data.json())
                     .then(data => {
-                        const h2 = document.createElement("h2");
-                        h2.innerText = `${data.name}`;
-                        box.append(h2);
-                        const p = document.createElement("p");
-                        p.innerText = `${data.body}`;
-                        box.append(p);
-                        const p1 = document.createElement("p");
-                        p1.innerText = `${data.email}`;
-                        box.append(p1);
+                        data.forEach(comment => {
+                            console.log(comment);
+                            const h2 = document.createElement("h2");
+                            h2.innerText = `${comment.name}`;
+                            box.append(h2);
+                            const p = document.createElement("p");
+                            p.innerText = `${comment.body}`;
+                            box.append(p);
+                            const p1 = document.createElement("p");
+                            p1.innerText = `${comment.email}`;
+                            box.append(p1);
+                        })
                     });
             });
         })
