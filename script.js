@@ -7,9 +7,13 @@ const API = "https://jsonplaceholder.typicode.com";
 
 const form = document.querySelector("form");
 const id = document.querySelector("input");
+const box = document.createElement("div");
+const boxComments = document.createElement("div");
 
 form.addEventListener("submit", e => {
     e.preventDefault();
+    box.innerHTML = "";
+    boxComments.innerHTML = "";
 
     fetch(`${API}/posts/${id.value}`)
         .then(data => {
@@ -19,9 +23,6 @@ form.addEventListener("submit", e => {
             return Promise.reject(data);
         })
         .then(data => {
-
-            const box = document.createElement("div");
-            // box.innerHTML = "";
             box.classList.add("box");
             const h1 = document.createElement("h1");
             h1.innerText = `${data.title}`;
@@ -29,38 +30,37 @@ form.addEventListener("submit", e => {
             const p = document.createElement("p");
             p.innerText = `${data.body}`;
             box.append(p);
-
             const div = document.createElement("div");
             div.classList.add("click");
             const get = document.createElement("p");
             get.innerText = "Получить комментарии";
             div.append(get);
             box.append(div);
+            box.append(boxComments);
             document.body.append(box);
 
             div.addEventListener("click", e => {
                 e.preventDefault();
-
                 fetch(`${API}/posts/${id.value}/comments`)
                     .then(data => data.json())
                     .then(data => {
+                        boxComments.innerHTML = "";
                         data.forEach(comment => {
-                            console.log(comment);
                             const h2 = document.createElement("h2");
                             h2.innerText = `${comment.name}`;
-                            box.append(h2);
+                            boxComments.append(h2);
                             const p = document.createElement("p");
                             p.innerText = `${comment.body}`;
-                            box.append(p);
+                            boxComments.append(p);
                             const p1 = document.createElement("p");
                             p1.innerText = `${comment.email}`;
-                            box.append(p1);
+                            boxComments.append(p1);
                         })
                     });
             });
         })
         .catch((data) => {
             console.log(`ошибка ${data.status}`);
-            alert(`ошибка ${data.status}`)
+            alert(`ошибка ${data.status}. Введите от 1 до 100`)
         });
 });
